@@ -1,5 +1,6 @@
-from . import models
 from sqlalchemy.orm import Session
+
+from . import models
 
 
 def get_document(db: Session, document_id: int):

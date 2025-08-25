@@ -1,7 +1,7 @@
 import io
 
-import PyPDF2
 import docx
+from pypdf import PdfReader
 
 
 def read_pdf(file_bytes: bytes) -> str:
@@ -11,7 +11,7 @@ def read_pdf(file_bytes: bytes) -> str:
     :return:
     """
     file_stream = io.BytesIO(file_bytes)
-    pdf_reader = PyPDF2.PdfReader(file_stream)
+    pdf_reader = PdfReader(file_stream)
     text = ""
     for page in pdf_reader.pages:
         text += page.extract_text()
