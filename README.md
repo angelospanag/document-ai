@@ -28,7 +28,7 @@ future iterations to support larger document sets and improve accuracy at scale.
         * [1. Install Python 3, uv, Docker and Ollama](#1-install-python-3-uv-docker-and-ollama)
         * [2. Create a virtual environment with all necessary dependencies](#2-create-a-virtual-environment-with-all-necessary-dependencies)
         * [3. Create a `.env` file at the root of the project](#3-create-a-env-file-at-the-root-of-the-project)
-        * [4. Run a LLM locally using Ollama](#4-run-a-llm-locally-using-ollama)
+        * [4. Store models locally using Ollama](#4-store-models-locally-using-ollama)
         * [5. Run PostgreSQL using Docker and perform migrations](#5-run-postgresql-using-docker-and-perform-migrations)
     * [Run application](#run-application)
         * [Development mode](#development-mode)
@@ -60,7 +60,7 @@ future iterations to support larger document sets and improve accuracy at scale.
 
 ```bash
 brew install python@3.13 uv
-brew install --cask docker ollama
+brew install --cask docker ollama-app
 ```
 
 ### 2. Create a virtual environment with all necessary dependencies
