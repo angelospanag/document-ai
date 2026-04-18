@@ -11,7 +11,6 @@ from app import crud, database, config
 from app.config import get_settings
 from app.ingest import read_pdf, read_docx
 from app.llm import answer_question, summarize_text
-
 from app.models import DocumentChunk
 
 embed_model = OllamaEmbeddings(model="nomic-embed-text")  # or "mxbai-embed-large"
