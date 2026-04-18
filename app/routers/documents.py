@@ -1,15 +1,15 @@
 from http import HTTPStatus
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app import crud, database, config
+from app import config, crud, database
 from app.config import get_settings
-from app.ingest import read_pdf, read_docx
+from app.ingest import read_docx, read_pdf
 from app.llm import answer_question, summarize_text
 from app.models import DocumentChunk
 
