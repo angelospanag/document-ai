@@ -1,7 +1,7 @@
 services:
 
   db:
-    image: pgvector/pgvector:0.8.0-pg17
+    image: pgvector/pgvector:0.8.2-pg18-trixie
     ports:
       - "5432:5432"
     environment:
