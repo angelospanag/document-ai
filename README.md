@@ -29,11 +29,7 @@ future iterations to support larger document sets and improve accuracy at scale.
         * [Create a `.env` file at the root of the project](#create-a-env-file-at-the-root-of-the-project)
         * [Store models locally using Ollama](#store-models-locally-using-ollama)
         * [Run PostgreSQL using Docker and perform migrations](#run-postgresql-using-docker-and-perform-migrations)
-    * [Run application](#run-application)
-        * [Development mode](#development-mode)
-        * [Production mode](#production-mode)
-    * [Linting](#linting)
-    * [Formatting](#formatting)
+    * [Development](#development)
 
 <!-- TOC -->
 
@@ -116,28 +112,16 @@ docker compose up -d db
 alembic upgrade head
 ```
 
-## Run application
+## Development
 
-### Development mode
-
-```bash
-uv run fastapi dev app/main.py
-```
-
-### Production mode
-
-```bash
-uv run fastapi run app/main.py
-```
-
-## Linting
-
-```bash
-ruff check app/* tests/*
-```
-
-## Formatting
-
-```bash
-ruff format app/* tests/*
-```
+| Command              | Description                            |
+|----------------------|----------------------------------------|
+| `mise run install`   | Install dependencies into `.venv`      |
+| `mise run dev`       | FastAPI dev server on `127.0.0.1:8000` |
+| `mise run serve`     | Production server on `0.0.0.0:8000`    |
+| `mise run test`      | Run tests with coverage                |
+| `mise run fmt`       | Format code via `ruff format`          |
+| `mise run lint`      | Lint code via `ruff check`             |
+| `mise run typecheck` | Type check via `ty check`              |
+| `mise run vuln`      | Audit deps for known vulnerabilities   |
+| `mise run deps`      | Update and sync dependencies           |
