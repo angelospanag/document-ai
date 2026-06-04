@@ -23,9 +23,8 @@ router = APIRouter(
 
 
 @router.get("/")
-async def get_documents(db: Session = Depends(database.get_db)):
-    docs = crud.list_documents(db=db)
-    return docs
+async def get_documents(db: Session = Depends(database.get_db)):  # noqa: B008
+    return crud.list_documents(db=db)
 
 
 class SummaryOutput(BaseModel):
@@ -34,14 +33,9 @@ class SummaryOutput(BaseModel):
 
 @router.post("/")
 async def upload_document(
-    db: Session = Depends(database.get_db), file: UploadFile = File(...)
+    db: Session = Depends(database.get_db),  # noqa: B008
+    file: UploadFile = File(...),  # noqa: B008
 ):
-    """Upload a document.
-
-    :param db: Database session
-    :param file: The file to be uploaded
-    :return:
-    """
     try:
         if file.filename.endswith(".pdf"):
             file_contents = await file.read()
@@ -52,27 +46,25 @@ async def upload_document(
         else:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
-                detail=f"Unsupported file type: {file.filename}. Only PDF and DOCX are supported.",
+                detail=(
+                    f"Unsupported file type: {file.filename}. "
+                    "Only PDF and DOCX are supported."
+                ),
             )
 
         created_doc = crud.create_document(
             db=db, document_content=text, document_name=file.filename
         )
 
-        # Chunk text
         splitter = RecursiveCharacterTextSplitter(
             chunk_size=500,
             chunk_overlap=100,
         )
 
-        # Embed chunks
         chunks = splitter.split_text(text)
-
-        # Embed chunks
         embeddings = embed_model.embed_documents(chunks)
 
-        # Store chunks with embeddings
-        for chunk_text, embedding in zip(chunks, embeddings):
+        for chunk_text, embedding in zip(chunks, embeddings, strict=False):
             chunk_entry = DocumentChunk(
                 document_id=created_doc.id, chunk=chunk_text, embedding=embedding
             )
@@ -82,11 +74,13 @@ async def upload_document(
         db.close()
         return {"message": "Document created"}
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while processing the request: {str(e)} ",
-        )
+            detail=f"An error occurred while processing the request: {e!s} ",
+        ) from e
 
 
 class AskQuestionOutput(BaseModel):
@@ -102,17 +96,8 @@ async def ask_question(
     settings: Annotated[config.Settings, Depends(get_settings)],
     document_id: int,
     ask_question_input: AskQuestionInput,
-    db: Session = Depends(database.get_db),
+    db: Session = Depends(database.get_db),  # noqa: B008
 ) -> AskQuestionOutput:
-    """
-    Ask a question about an uploaded document.
-
-    :param db: Database session
-    :param document_id: Document ID
-    :param ask_question_input: Free text question
-    :param settings: Settings object
-    :return
-    """
     try:
         document = crud.get_document(db=db, document_id=document_id)
 
@@ -122,7 +107,6 @@ async def ask_question(
                 detail="Document not found",
             )
 
-        # Answer the question based on the document
         answer = answer_question(
             settings.generation_model_name,
             ask_question_input.question,
@@ -130,27 +114,21 @@ async def ask_question(
         )
         return AskQuestionOutput(answer=answer)
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while processing the request: {str(e)} ",
-        )
+            detail=f"An error occurred while processing the request: {e!s} ",
+        ) from e
 
 
 @router.get("/{document_id}/summarise")
 async def summarise(
     settings: Annotated[config.Settings, Depends(get_settings)],
     document_id: int,
-    db: Session = Depends(database.get_db),
+    db: Session = Depends(database.get_db),  # noqa: B008
 ) -> SummaryOutput:
-    """Summarise an uploaded document.
-
-    :param settings: Settings object
-    :param db: Database session
-    :param document_id: Document ID
-    :param db: Database session
-    :return:
-    """
     try:
         document = crud.get_document(db=db, document_id=document_id)
 
@@ -160,12 +138,13 @@ async def summarise(
                 detail="Document not found",
             )
 
-        # Summarize the document
         summary = summarize_text(settings.generation_model_name, document.text_content)
         return SummaryOutput(summary=summary)
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(
             status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-            detail=f"An error occurred while processing the request: {str(e)} ",
-        )
+            detail=f"An error occurred while processing the request: {e!s} ",
+        ) from e

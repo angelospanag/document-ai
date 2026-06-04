@@ -10,7 +10,10 @@ def answer_question(model_name: str, question: str, document_text: str) -> str:
     :return:
     """
     llm = ChatOllama(model=model_name)
-    prompt = f"Answer the following question based on the document: {document_text}\n\nQuestion: {question}\nAnswer:"
+    prompt = (
+        f"Answer the following question based on the document: {document_text}"
+        f"\n\nQuestion: {question}\nAnswer:"
+    )
     response = llm.invoke(prompt)
     return response.content
 
