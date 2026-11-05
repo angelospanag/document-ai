@@ -1,7 +1,7 @@
 services:
 
   db:
-    image: pgvector/pgvector:0.8.6-pg18-trixie
+    image: pgvector/pgvector:0.8.7-pg18-trixie
     ports:
       - "5432:5432"
     environment:
@@ -14,7 +14,7 @@ services:
   api:
     build: .
     ports:
-      - "8000:80"
+      - "8000:8000"
     environment:
       # Ollama
       - GENERATION_MODEL_NAME=llama3.2
