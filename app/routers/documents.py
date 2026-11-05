@@ -36,24 +36,25 @@ async def upload_document(
     db: Session = Depends(database.get_db),  # noqa: B008
     file: UploadFile = File(...),  # noqa: B008
 ):
+    filename = file.filename or ""
     try:
-        if file.filename.endswith(".pdf"):
+        if filename.endswith(".pdf"):
             file_contents = await file.read()
             text = read_pdf(file_contents)
-        elif file.filename.endswith(".docx"):
+        elif filename.endswith(".docx"):
             file_contents = await file.read()
             text = read_docx(file_contents)
         else:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
                 detail=(
-                    f"Unsupported file type: {file.filename}. "
+                    f"Unsupported file type: {filename}. "
                     "Only PDF and DOCX are supported."
                 ),
             )
 
         created_doc = crud.create_document(
-            db=db, document_content=text, document_name=file.filename
+            db=db, document_content=text, document_name=filename
         )
 
         splitter = RecursiveCharacterTextSplitter(

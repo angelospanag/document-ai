@@ -15,7 +15,7 @@ def answer_question(model_name: str, question: str, document_text: str) -> str:
         f"\n\nQuestion: {question}\nAnswer:"
     )
     response = llm.invoke(prompt)
-    return response.content
+    return response.text
 
 
 def summarize_text(model_name: str, text: str) -> str:
@@ -28,4 +28,4 @@ def summarize_text(model_name: str, text: str) -> str:
     prompt = f"Summarize the following text:\n\n{text}"
     response = llm.invoke(prompt)
 
-    return response.content
+    return response.text
